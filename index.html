@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FDR Vault | AICTE Security Deposit / FDR Management Portal</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b3d91'/%3E%3Ctext x='50%25' y='54%25' font-family='Inter,Arial' font-weight='700' font-size='28' fill='%23ffffff' text-anchor='middle'%3EFV%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-screen">
+    <header class="login-header">
+      <div class="login-brand">
+        <div class="brand-mark">FV</div>
+        <div class="brand-text">
+          <div class="brand-title">FDR Vault</div>
+          <div class="brand-sub">AICTE Security Deposit / FDR Management Portal</div>
+        </div>
+      </div>
+      <div class="login-header-meta">Government of India · All India Council for Technical Education</div>
+    </header>
+    <main class="login-main">
+      <section class="login-card">
+        <div class="login-card-header">
+          <h1>Sign in</h1>
+          <p>Select a role to access the prototype with dummy data.</p>
+        </div>
+        <div class="role-grid">
+          <button class="role-card" data-role="college">
+            <div class="role-icon">🏫</div>
+            <div class="role-body">
+              <div class="role-title">Institution / College Login</div>
+              <div class="role-desc">Submit FDR, view status, request release/refund</div>
+            </div>
+            <div class="role-arrow">→</div>
+          </button>
+          <button class="role-card" data-role="ro">
+            <div class="role-icon">🧾</div>
+            <div class="role-body">
+              <div class="role-title">AICTE Regional Office (RO)</div>
+              <div class="role-desc">Verify, track maturity/renewal, process releases</div>
+            </div>
+            <div class="role-arrow">→</div>
+          </button>
+          <button class="role-card" data-role="bureau">
+            <div class="role-icon">🏛️</div>
+            <div class="role-body">
+              <div class="role-title">AICTE Approval Bureau</div>
+              <div class="role-desc">Bureau clearance, escalation & reports</div>
+            </div>
+            <div class="role-arrow">→</div>
+          </button>
+          <button class="role-card" data-role="grievance">
+            <div class="role-icon">📨</div>
+            <div class="role-body">
+              <div class="role-title">Grievance Cell</div>
+              <div class="role-desc">Clearance for release/refund cases</div>
+            </div>
+            <div class="role-arrow">→</div>
+          </button>
+          <button class="role-card" data-role="vigilance">
+            <div class="role-icon">🛡️</div>
+            <div class="role-body">
+              <div class="role-title">Vigilance Cell</div>
+              <div class="role-desc">Clearance for release/refund cases</div>
+            </div>
+            <div class="role-arrow">→</div>
+          </button>
+          <button class="role-card" data-role="admin">
+            <div class="role-icon">⚙️</div>
+            <div class="role-body">
+              <div class="role-title">System Admin</div>
+              <div class="role-desc">Users, roles, audit trail, settings</div>
+            </div>
+            <div class="role-arrow">→</div>
+          </button>
+        </div>
+        <div class="login-footnote">Prototype uses fictional data. Bank verification is simulated for demo purposes.</div>
+      </section>
+    </main>
+    <footer class="login-footer">
+      <div>Designed for Smart India Hackathon 2026 · Team Inovix</div>
+      <div>AICTE Regulation Bureau · PS SIH26265</div>
+    </footer>
+  </div>
+
+  <!-- App Shell -->
+  <div id="app-shell" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-mark">FV</div>
+        <div class="brand-text">
+          <div class="brand-title">FDR Vault</div>
+          <div class="brand-sub">Security Deposit / FDR</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">📊</span> Dashboard</button>
+        <button class="nav-item" data-view="instruments"><span class="nav-icon">🧾</span> FDR / Deposit Records</button>
+        <button class="nav-item" data-view="submit" data-role-visible="college"><span class="nav-icon">➕</span> Submit FDR</button>
+        <button class="nav-item" data-view="releases"><span class="nav-icon">↩️</span> Release / Refund</button>
+        <button class="nav-item" data-view="alerts"><span class="nav-icon">🔔</span> Alerts</button>
+        <button class="nav-item" data-view="reports" data-role-visible="ro,bureau,admin"><span class="nav-icon">📈</span> Reports</button>
+        <button class="nav-item" data-view="audit" data-role-visible="admin,ro,bureau"><span class="nav-icon">🧮</span> Audit Trail</button>
+        <button class="nav-item" data-view="users" data-role-visible="admin"><span class="nav-icon">👥</span> User Management</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="session-card">
+          <div class="session-role" id="session-role">-</div>
+          <div class="session-user" id="session-user">-</div>
+          <button class="logout-btn" id="logout-btn">Switch role / Logout</button>
+          <button class="reset-btn" id="reset-demo">Reset demo data</button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="breadcrumb">
+            <span>FDR Vault</span>
+            <span class="sep">/</span>
+            <span id="view-title">Dashboard</span>
+          </div>
+          <div class="topbar-sub">AICTE Regulation Bureau · Centralized Security Deposit / FDR Management</div>
+        </div>
+        <div class="topbar-right">
+          <button class="help-chip" id="demo-guide">Demo guide</button>
+          <button class="alert-chip" id="alert-chip" title="Open alerts">🔔 <span id="alert-count">0</span> alerts</button>
+          <div class="topbar-chip">Demo · Dummy Data</div>
+          <div class="topbar-chip">Today: <span id="today-chip"></span></div>
+        </div>
+      </header>
+
+      <!-- Dashboard -->
+      <section class="view active" data-view="dashboard">
+        <header class="view-header dashboard-head">
+          <div>
+            <p class="eyebrow">Regulation Bureau · Command centre</p>
+            <h1 id="dash-title">Security deposit portfolio</h1>
+            <p id="dash-sub">Live view of security deposits and FDRs across AICTE-approved institutions</p>
+          </div>
+          <div class="portfolio-strip" id="portfolio-strip"></div>
+        </header>
+        <div class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-label">Active Instruments</div>
+            <div class="kpi-value" id="kpi-active">0</div>
+            <div class="kpi-foot">Excl. Exempt/Released/Renewed</div>
+          </article>
+          <article class="kpi-card warn">
+            <div class="kpi-label">Expiring in 30 Days</div>
+            <div class="kpi-value" id="kpi-exp30">0</div>
+            <div class="kpi-foot">Maturity/validity approaching</div>
+          </article>
+          <article class="kpi-card alert">
+            <div class="kpi-label">Matured / Overdue</div>
+            <div class="kpi-value" id="kpi-overdue">0</div>
+            <div class="kpi-foot">Requires renewal/replacement</div>
+          </article>
+          <article class="kpi-card info">
+            <div class="kpi-label">Release/Refund Requests</div>
+            <div class="kpi-value" id="kpi-releases">0</div>
+            <div class="kpi-foot">In process / awaiting clearance</div>
+          </article>
+          <article class="kpi-card ok">
+            <div class="kpi-label">Released</div>
+            <div class="kpi-value" id="kpi-released">0</div>
+            <div class="kpi-foot">Completed as per procedure</div>
+          </article>
+        </div>
+        <div class="grid-2">
+          <section class="panel">
+            <header class="panel-header">
+              <div>
+                <h2>Upcoming Maturities</h2>
+                <p>Prioritized by days to maturity</p>
+              </div>
+              <button class="panel-link" data-go="alerts">View all alerts →</button>
+            </header>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Instrument</th>
+                    <th>Institution</th>
+                    <th>Maturity</th>
+                    <th>Days Left</th>
+                    <th>Status/Verification</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-upcoming"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel">
+            <header class="panel-header">
+              <div>
+                <h2>Pending Verifications</h2>
+                <p>Self-declared instruments awaiting bank confirmation / review</p>
+              </div>
+              <button class="panel-link" data-go="instruments">Review queue →</button>
+            </header>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Instrument</th>
+                    <th>Institution</th>
+                    <th>Submitted</th>
+                    <th>Docs</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-pending"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+        <div class="grid-2">
+          <section class="panel">
+            <header class="panel-header">
+              <div>
+                <h2>Release Workflow Snapshot</h2>
+                <p>College request → RO → Approval Bureau → Grievance Cell → Vigilance Cell → NOC / Release</p>
+              </div>
+              <button class="panel-link" data-go="releases">Open release tracker →</button>
+            </header>
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Instrument</th>
+                    <th>Institution</th>
+                    <th>Requested</th>
+                    <th>Stage</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-releases"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel">
+            <header class="panel-header">
+              <div>
+                <h2>Discrepancy Watchlist</h2>
+                <p>Auto-flagged by the rule engine</p>
+              </div>
+              <button class="panel-link" data-go="instruments">Open repository →</button>
+            </header>
+            <div id="dash-watchlist" class="watchlist"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Instruments -->
+      <section class="view" data-view="instruments">
+        <header class="view-header">
+          <div>
+            <h1>FDR / Security Deposit Records</h1>
+            <p>Institution-wise and instrument-wise repository with verification, flags &amp; history</p>
+          </div>
+          <div class="view-actions">
+            <input class="search" id="inst-search" placeholder="Search by FDR No., Institution, Bank, AICTE ID...">
+            <select class="filter" id="inst-filter-status">
+              <option value="all">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Expiring">Expiring (≤30 days)</option>
+              <option value="Pending Verification">Pending Verification</option>
+              <option value="Matured">Matured</option>
+              <option value="Renewed">Renewed</option>
+              <option value="Released">Released</option>
+              <option value="Exempt">Exempt</option>
+            </select>
+            <select class="filter" id="inst-filter-ver">
+              <option value="all">All Verification</option>
+              <option value="Bank-confirmed">Bank-confirmed</option>
+              <option value="Self-declared">Self-declared</option>
+              <option value="Discrepancy">Discrepancy</option>
+              <option value="Exempt">Exempt</option>
+            </select>
+            <button class="btn ghost" id="export-instruments">Export CSV</button>
+          </div>
+        </header>
+        <section class="panel">
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Instrument ID</th>
+                  <th>Institution</th>
+                  <th>FDR No.</th>
+                  <th>Bank / Branch</th>
+                  <th>Amount (₹)</th>
+                  <th>Issue / Maturity</th>
+                  <th>Joint Holders</th>
+                  <th>Verification</th>
+                  <th>Status</th>
+                  <th>Flags</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="inst-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Submit -->
+      <section class="view" data-view="submit" data-role-visible="college">
+        <header class="view-header">
+          <div>
+            <h1>Submit New FDR / Security Deposit</h1>
+            <p>Upload FDR copy and supporting documents. Bank confirmation recommended for faster verification.</p>
+          </div>
+        </header>
+        <div class="grid-2">
+          <section class="panel">
+            <header class="panel-header"><div><h2>Instrument Details</h2><p>Joint FDR in favour of Trust/Society &amp; AICTE as applicable</p></div></header>
+            <form class="form" id="submit-form">
+              <div class="form-row">
+                <label class="form-field">
+                  <span class="form-label">Institution</span>
+                  <select class="input" id="sub-inst" required></select>
+                </label>
+                <label class="form-field">
+                  <span class="form-label">FDR / Deposit Number</span>
+                  <input class="input" id="sub-fdrno" placeholder="e.g. FDR 2026-XXX" required>
+                </label>
+              </div>
+              <div class="form-row">
+                <label class="form-field"><span class="form-label">Issuing Bank</span><input class="input" id="sub-bank" required></label>
+                <label class="form-field"><span class="form-label">Branch</span><input class="input" id="sub-branch" required></label>
+              </div>
+              <div class="form-row">
+                <label class="form-field"><span class="form-label">IFSC Code</span><input class="input" id="sub-ifsc" placeholder="XXXX0000000" required></label>
+                <label class="form-field"><span class="form-label">Deposit Amount (₹)</span><input class="input" type="number" id="sub-amt" required></label>
+              </div>
+              <div class="form-row">
+                <label class="form-field"><span class="form-label">Issue Date</span><input class="input" type="date" id="sub-issue" required></label>
+                <label class="form-field"><span class="form-label">Maturity Date</span><input class="input" type="date" id="sub-mat" required></label>
+              </div>
+              <label class="form-field">
+                <span class="form-label">Joint Holders (as per FDR)</span>
+                <input class="input" id="sub-joint" placeholder="e.g. Chairman, Trust Name & Regional Officer, AICTE">
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="btn primary">Submit for Verification</button>
+                <button type="button" class="btn" id="sub-reset">Reset</button>
+              </div>
+              <div class="form-note">* This is a prototype submission. In production, bank-issued verification would be triggered via authorized integration.</div>
+            </form>
+          </section>
+          <section class="panel">
+            <header class="panel-header"><div><h2>Upload Documents</h2><p>Upload clear scanned copies (PDF/JPG/PNG). Max 5 files.</p></div></header>
+            <div class="upload-zone" id="upload-zone">
+              <div class="upload-icon">📁</div>
+              <div class="upload-title">Drag &amp; drop files here or click to browse</div>
+              <div class="upload-sub">FDR Copy (required) · Bank Confirmation (recommended) · Trust Resolution / Affidavit (if available)</div>
+              <input type="file" id="upload-input" multiple accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+            <div class="upload-actions">
+              <button type="button" class="btn ghost small" id="use-sample-docs">Use sample documents</button>
+              <span class="hint">For demo, sample files can be attached without browsing.</span>
+            </div>
+            <div class="upload-list" id="upload-list"></div>
+            <div class="panel">
+              <header class="panel-header"><div><h2>Discrepancy Check (Simulated)</h2><p>FDR Vault flags common issues on submission</p></div></header>
+              <ul class="checklist">
+                <li>Mandatory fields validated</li>
+                <li>IFSC format check</li>
+                <li>Amount vs institution deposit requirement (if known)</li>
+                <li>Issue/Maturity date logic check</li>
+                <li>FDR copy presence</li>
+                <li>Bank confirmation status tracked</li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Releases -->
+      <section class="view" data-view="releases">
+        <header class="view-header">
+          <div>
+            <h1>Release / Refund Workflow</h1>
+            <p>Track requests as per prescribed procedure: RO → Approval Bureau → Grievance Cell → Vigilance Cell → NOC</p>
+          </div>
+        </header>
+        <section class="panel">
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Instrument</th>
+                  <th>Institution</th>
+                  <th>Reason</th>
+                  <th>Requested</th>
+                  <th>RO</th>
+                  <th>Approval Bureau</th>
+                  <th>Grievance Cell</th>
+                  <th>Vigilance Cell</th>
+                  <th>NOC / Release</th>
+                  <th>Stage</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="rel-table"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel" id="rel-request-panel" data-role-visible="college">
+          <header class="panel-header"><div><h2>Request Release / Refund</h2><p>Select an eligible instrument (matured or as per approval) and attach required documents.</p></div></header>
+          <div class="grid-2">
+            <div>
+              <label class="form-field">
+                <span class="form-label">Select Instrument</span>
+                <select class="input" id="rel-inst"></select>
+              </label>
+              <label class="form-field">
+                <span class="form-label">Reason</span>
+                <select class="input" id="rel-reason">
+                  <option>Deposit no longer required - institution not admitting new batch</option>
+                  <option>Deposit no longer required - course closure</option>
+                  <option>Replacement of instrument with a fresh FDR</option>
+                  <option>Other (mention in note)</option>
+                </select>
+              </label>
+              <label class="form-field">
+                <span class="form-label">Note / Details</span>
+                <textarea class="textarea" id="rel-note" placeholder="Provide brief details for the request..."></textarea>
+              </label>
+              <div class="form-actions">
+                <button class="btn primary" id="rel-submit">Submit Release Request</button>
+              </div>
+            </div>
+            <div class="panel inner-panel">
+              <header class="panel-header"><div><h2>Release File Checklist</h2><p>Uncheck a document to simulate an incomplete file</p></div></header>
+              <ul class="doc-checks">
+                <li><label><input type="checkbox" id="rel-doc-letter" checked> Release request letter (on letterhead)</label></li>
+                <li><label><input type="checkbox" id="rel-doc-affidavit" checked> Affidavit (as applicable)</label></li>
+                <li><label><input type="checkbox" id="rel-doc-fdr" checked> Original FDR copy</label></li>
+                <li><label><input type="checkbox" id="rel-doc-resolution"> Trust/Society resolution</label></li>
+                <li><label><input type="checkbox" id="rel-declare" checked> I confirm the information and documents are accurate</label></li>
+              </ul>
+              <div class="form-note">The rule engine will flag a request if required documents are missing.</div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Alerts -->
+      <section class="view" data-view="alerts">
+        <header class="view-header">
+          <div>
+            <h1>Alerts &amp; Reminders</h1>
+            <p>Multi-level alerts (30/15/7 days) with escalation cues. Overdue cases flagged.</p>
+          </div>
+        </header>
+        <div class="alert-grid" id="alert-grid"></div>
+      </section>
+
+      <!-- Reports -->
+      <section class="view" data-view="reports" data-role-visible="ro,bureau,admin">
+        <header class="view-header">
+          <div>
+            <h1>Reports &amp; Dashboard Summary</h1>
+            <p>Consolidated view for monitoring and review</p>
+          </div>
+        </header>
+        <div class="grid-2">
+          <section class="panel">
+            <header class="panel-header"><div><h2>Status Distribution</h2><p>Active, Renewed, Released, Pending, Exempt</p></div></header>
+            <div id="chart-status" class="chart-bars"></div>
+          </section>
+          <section class="panel">
+            <header class="panel-header"><div><h2>Maturity Timeline</h2><p>Instruments maturing in upcoming buckets</p></div></header>
+            <div id="chart-maturity" class="chart-columns"></div>
+          </section>
+        </div>
+        <section class="panel">
+          <header class="panel-header"><div><h2>Region-wise Summary</h2><p>Active instruments &amp; value</p></div></header>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Region</th><th>Institutions</th><th>Active Instruments</th><th>Total Deposit Value (₹)</th><th>Expiring in 30 Days</th></tr>
+              </thead>
+              <tbody id="rep-region"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Audit -->
+      <section class="view" data-view="audit" data-role-visible="ro,bureau,admin">
+        <header class="view-header">
+          <div>
+            <h1>Audit Trail</h1>
+            <p>Traceable log of submissions, verifications, clearances, changes &amp; releases</p>
+          </div>
+          <div class="view-actions">
+            <input class="search" id="audit-search" placeholder="Search by actor, action, instrument...">
+          </div>
+        </header>
+        <section class="panel">
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Timestamp</th><th>Actor</th><th>Role</th><th>Action</th><th>Target</th><th>Details</th></tr>
+              </thead>
+              <tbody id="audit-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Users -->
+      <section class="view" data-view="users" data-role-visible="admin">
+        <header class="view-header">
+          <div>
+            <h1>User Management</h1>
+            <p>Role-based access control (RBAC) for demo</p>
+          </div>
+        </header>
+        <section class="panel">
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>User</th><th>Role</th><th>Scope</th><th>Status</th><th>Last Login</th></tr>
+              </thead>
+              <tbody id="users-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detail-modal" class="modal hidden">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-dialog">
+      <header class="modal-header">
+        <div>
+          <h2 id="modal-title">Instrument Details</h2>
+          <p id="modal-subtitle">-</p>
+        </div>
+        <button class="modal-close" id="modal-close">✕</button>
+      </header>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
